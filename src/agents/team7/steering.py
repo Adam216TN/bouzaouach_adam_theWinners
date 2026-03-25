@@ -20,6 +20,13 @@ class Steering:
         """Réinitialise les variables d'instances de l'agent expert"""
         pass
         
+    
+    
+    def pilote(self,gx,gz):
+        return math.atan2(gx,gz)
+    
+    
+    
     def manage_pure_pursuit(self,gx:float,gz:float,gain:float) -> float:
         """
         Gère la logique de direction grâce au pure pursuit

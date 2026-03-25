@@ -29,20 +29,26 @@ class Agent7(KartAgent):
     def choose_action(self, obs):
         
         points = obs['paths_start']
+        points2 = obs['center_path']
         target = points[2]
+        target2 = points[0]
         gx = target[0]
         gz = target[2]
+        gx2 = target2[0]
+        gz2 = target2[2]
 
         if self.steps <= 200:
             print(f" Pas de temps : {self.steps}") #Affichage du nombre de pas de temps
         #print(f"distance : {obs['distance_down_track']}")
         
         brake = False
+
+        
         
         # Si on est à moins de 200 pas de temps on avance à fond en utilisant notre fonction pure_pursuit
         if self.steps <= 200:
-            acceleration = 1.0
-            steering = self.pilote.manage_pure_pursuit(gx,gz,7.0)
+            acceleration = 0.5
+            steering = self.pilote.pilote(gx,gz)
             distance = obs['distance_down_track']
             self.dist = distance
 
@@ -51,7 +57,9 @@ class Agent7(KartAgent):
             # Pour faire une marche arrière, on mets brake à true et accel à 0
             brake = True
             acceleration = 0.0
-            steering = self.pilote.manage_pure_pursuit(gx,gz,7.0)
+            steering = self.pilote.pilote(gx2,gz2)
+            steering = steering * 0.1
+            #steering = steering*-1
             #print(f" Pas de temps : {self.steps}")
         
         # Quand on est revenu sur la ligne de départ, on coupe les gaz totalement
