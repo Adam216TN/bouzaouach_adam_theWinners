@@ -25,8 +25,8 @@ from agents.team7.agent7 import Agent7
 from pystk2_gymnasium.envs import STKRaceMultiEnv, AgentSpec
 from pystk2_gymnasium.definitions import CameraMode
 
-MAX_TEAMS = 7
-MAX_STEPS = 1000
+MAX_TEAMS = 1 # Modification du nombre de teams
+MAX_STEPS = 1000 # J'ai choisi de ne pas touche à la durée de la course en elle meme donc pour 2.a, faites ctrl+c à la fin des 200 pas de temps annoncés
 NB_RACES = 1
 
 # Get the current timestamp
@@ -101,13 +101,7 @@ def create_race():
     agents = []
     names = []
 
-    agents.append(Agent1(env, path_lookahead=3))
-    agents.append(Agent2(env, path_lookahead=3))
-    agents.append(Agent3(env, path_lookahead=3))
-    agents.append(Agent4(env, path_lookahead=3))
-    agents.append(Agent5(env, path_lookahead=3))
-    agents.append(Agent6(env, path_lookahead=3))
-    agents.append(Agent7(env, path_lookahead=3))
+    agents.append(Agent7(env, path_lookahead=3, steps =0)) # Appel de notre agent 7 en mettant steps à 0
     np.random.shuffle(agents)
 
     for i in range(MAX_TEAMS):
@@ -127,6 +121,7 @@ def single_race(env, agents, names, scores):
     while not done and steps < MAX_STEPS:
         actions = {}
         env.world_update()
+        #print(steps)
         for i in range(MAX_TEAMS):
             str = f"{i}"
             try:
@@ -140,7 +135,7 @@ def single_race(env, agents, names, scores):
             if kart.has_finished_race and not agents[i].isEnd:
                 print(f"{names[i]} has finished race !")
                 nb_finished += 1
-                agents[i].isEnd = True
+                agents[i].isEnd = False
 
         obs, _, _, _, info = env.step(actions)
 
@@ -152,6 +147,7 @@ def single_race(env, agents, names, scores):
             pos[i] = info['infos'][str]['position']
             dist[i] = info['infos'][str]['distance']
         steps = steps + 1
+        agents[0].steps += 1 # On incremente notre compteur propre à l'agent à chaque tour de boucle
         done = (nb_finished == 5)
         positions.append(pos)
         distances.append(dist)
